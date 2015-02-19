@@ -1,7 +1,6 @@
 .SECT .TEXT
-        MOV     AX, (x)
-        SUB     AX, (y)
-        MOV     (res), AX
+        !ADD     (res), (x)
+        !SUB     (res), (y)
 
 .SECT .DATA
 x:      .WORD   3
