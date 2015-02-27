@@ -26,13 +26,6 @@ L1:
         ADD     (x), 3
         LOOP    L1
 
-
-
-
-
-
-
-
 .SECT .DATA
 three:  .WORD   3
 five:   .WORD   5
