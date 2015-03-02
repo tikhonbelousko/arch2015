@@ -14,7 +14,7 @@
         PUSH    BX
         ADD     DI, 4
         CMP     DI, 12
-        JLE      1b
+        JLE     1b
 
 .SECT .DATA
 x:    .WORD   4
