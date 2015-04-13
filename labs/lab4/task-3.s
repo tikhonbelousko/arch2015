@@ -23,6 +23,7 @@ SUM:
         PUSH    BP
         MOV     BP, SP
 
+        PUSH    SI
         PUSH    BX
         MOV     BX, 0
 
@@ -45,7 +46,7 @@ BREAK:
         MOV     AX, BX
 
         POP     BX
-
+        POP     SI
         POP     BP
         RET
 
