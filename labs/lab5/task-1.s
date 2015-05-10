@@ -69,7 +69,7 @@ EPILOGUE:
 
 
 .SECT .DATA
-arr:    .WORD   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+arr:    .SPACE  32
 end:    .BYTE   0
 
 .SECT .BSS
