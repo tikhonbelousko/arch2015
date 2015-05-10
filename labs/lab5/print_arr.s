@@ -14,9 +14,9 @@ PRINT_ARR:
 
         MOV     CX, 4(BP)
         MOV     BX, 6(BP)
-L1:
+PRINT_ARR_ITER:
         PUSH    (BX)
-        PUSH    array_format
+        PUSH    print_arr_format
         PUSH    _PRINTF
         SYS
         ADD     SP, 6
@@ -24,7 +24,7 @@ L1:
 
         DEC     CX
         CMP     CX, 0
-        JNE     L1
+        JNE     PRINT_ARR_ITER
 
         ! Next line
         PUSH '\n'
@@ -39,6 +39,6 @@ L1:
         RET
 
 .SECT .DATA
-array_format:         .ASCIZ          "%d "
+print_arr_format:         .ASCIZ          "%d "
 
 .SECT .BSS

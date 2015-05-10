@@ -33,18 +33,40 @@ ZIP_WITH:
         PUSH    BP
         MOV     BP, SP
 
-        _FUNC    = 4(BP)
+        PUSH    CX
+        PUSH    BX
+        PUSH    SI
+        PUSH    DI
+        PUSH    AX
 
-        POP     BP
-        RET
+        MOV     CX, 4(BP)
+        MOV     BX, 6(BP)
+        MOV     SI, 8(BP)
+        MOV     DI, 10(BP)
+        !       12(BP) - function
 
-!!!
-! MAX of two numbers
-!!!
-MAX:
-        PUSH    BP
-        MOV     BP, SP
+ZIP_WITH_ITER:
+        CMP     CX, 0
+        JLE     ZIP_WITH_EPILOGUE
+        PUSH    (SI)
+        PUSH    (DI)
+        CALL    12(BP)
+        ADD     SP, 4
 
+        MOV     (BX), AX
+        ADD     BX, 2
+        ADD     SI, 2
+        ADD     DI, 2
+
+        DEC     CX
+        JMP     ZIP_WITH_ITER
+
+ZIP_WITH_EPILOGUE:
+        POP     AX
+        POP     DI
+        POP     SI
+        POP     BX
+        POP     CX
 
         POP     BP
         RET
