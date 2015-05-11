@@ -3,38 +3,19 @@ _PRINTF = 127
 _PUTCHAR = 122
 
 .SECT .TEXT
-        ! Print number
+
+        ! Inverse
         PUSH    (n)
-        PUSH    int_format
-        PUSH    _PRINTF
-        SYS
-        ADD     SP, 6
-
-        ! Add right digit
-        PUSH    n
-        PUSH    6
-        CALL    ADD_RIGHT_DIGIT
-        ADD     SP, 4
-
-        ! Print number
-        PUSH    (n)
-        PUSH    int_format
-        PUSH    _PRINTF
-        SYS
-        ADD     SP, 6
-
-        ! ! Inverse
-        ! PUSH    (n)
-        ! CALL    INVERSE_INT
-        ! ADD     SP, 2
+        CALL    INVERSE_INT
+        ADD     SP, 2
 
 
         ! Print inversed number
-        ! PUSH    AX
-        ! PUSH    int_format
-        ! PUSH    _PRINTF
-        ! SYS
-        ! ADD     SP, 6
+        PUSH    AX
+        PUSH    int_format
+        PUSH    _PRINTF
+        SYS
+        ADD     SP, 6
 
         ! Exit program
         PUSH    0
@@ -44,56 +25,55 @@ _PUTCHAR = 122
 !!!
 ! Inverses order of digits in integer
 !!!
-! INVERSE_INT:
-!         PUSH    BP
-!         MOV     BP, SP
+INVERSE_INT:
+        PUSH    BP
+        MOV     BP, SP
 
-!         PUSH    0               ! -2(BP) == 0
-!         PUSH    4(BP)           ! -4(BP) == N
-!         PUSH    10              ! -6(BP) == 10
-!         PUSH    AX
-!         PUSH    BX
-!         PUSH    CX
-!         PUSH    DX
+        PUSH    0              ! -2(BP) == 0
+        PUSH    4(BP)           ! -4(BP) == N
+        PUSH    10              ! -6(BP) == 10
+        PUSH    BX
+        PUSH    CX
+        PUSH    DX
 
+        MOV     AX, -4(BP)
 
-! INVERSE_INT_ITER:
-!         CMP     -4(BP), 0
-!         JE      INVERSE_INT_EPILOGUE
-!         ! DIV     -6(BP)
-!         ! MOV     SI, AX
+INVERSE_INT_ITER:
+        CMP     AX, 0
+        JE      INVERSE_INT_EPILOGUE
+        DIV     -6(BP)                          ! AX % 10
+        MOV     -4(BP), AX                      ! n = AX / 10
 
-!         ! MOV     CX, BP
-!         ! SUB     CX, 2
-
-!         ! ! Print inversed number
-!         ! MOV     DI, -4(BP)
-!         ! PUSH    DI
-!         ! PUSH    int_format
-!         ! PUSH    _PRINTF
-!         ! SYS
-!         ! ADD     SP, 6
-
-!         ! PUSH    CX              ! accumulator
-!         ! PUSH    DX              ! digit
-!         ! CALL    ADD_RIGHT_DIGIT
-!         ! ADD     SP, 4
-
-!         ! JMP     INVERSE_INT_ITER
+        MOV     BX, BP
+        SUB     BX, 2
 
 
-! INVERSE_INT_EPILOGUE:
-!         MOV     AX, 6(BP)
+        PUSH    BX              ! accumulator address on stack
+        PUSH    DX              ! digit
+        CALL    ADD_RIGHT_DIGIT
+        ADD     SP, 4
 
-!         POP     BX
-!         POP     DX
-!         POP     CX
-!         POP     AX
-!         POP     BP
-!         POP     BP
-!         POP     BP
-!         POP     BP
-!         RET
+        ! ! Print inversed number
+        ! PUSH    -2(BP)
+        ! PUSH    int_format
+        ! PUSH    _PRINTF
+        ! SYS
+        ! ADD     SP, 6
+
+        JMP     INVERSE_INT_ITER
+
+
+INVERSE_INT_EPILOGUE:
+        MOV     AX, -2(BP)
+
+        POP     BX
+        POP     DX
+        POP     CX
+        POP     BP
+        POP     BP
+        POP     BP
+        POP     BP
+        RET
 
 !!!
 ! Add right digit to number
@@ -102,22 +82,32 @@ ADD_RIGHT_DIGIT:
         PUSH    BP
         MOV     BP, SP
 
-        PUSH    10              ! -2(BP) == 10
+        ! Fill stack
         PUSH    AX
-        PUSH    DX
         PUSH    BX
+        PUSH    10              ! -6(BP) == 10
 
+        ! use (6(BP))
         MOV     BX, 6(BP)
-        MOV     AX, (BX)
-        MUL     -2(BP)
-        ADD     AX, 4(BP)
-        MOV     (BX), AX
-
-
-        POP     BX
-        POP     DX
-        POP     AX
+        PUSH    BP
+        MOV     BP, BX
+        MOV     AX, (BP)
         POP     BP
+
+        ! Mult
+        MUL     -6(BP)
+        ADD     AX, 4(BP)
+
+        ! use (6(BP))
+        PUSH    BP
+        MOV     BP, BX
+        MOV     (BP), AX
+        POP     BP
+
+        ! Epilogue
+        POP     BX
+        POP     BX
+        POP     AX
 
         POP     BP
         RET
@@ -127,7 +117,6 @@ ADD_RIGHT_DIGIT:
 
 .SECT .DATA
 int_format:     .ASCIZ          "%d\n"
-n:              .WORD           122
-n0:             .WORD           123
+n:              .WORD           1234
 
 .SECT .BSS
